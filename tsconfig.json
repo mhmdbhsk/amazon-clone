@@ -1,5 +1,13 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@enum/*": ["libs/enum/*"],
+      "@store": ["app/store.ts"],
+      "@services": ["services/index.ts"],
+      "@slice/*": ["slice/*"]
+    },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
