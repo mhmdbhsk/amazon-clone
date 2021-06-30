@@ -3,6 +3,7 @@
     "baseUrl": "src",
     "paths": {
       "@components/*": ["components/*"],
+      "@config/*": ["config/*"],
       "@enum/*": ["libs/enum/*"],
       "@store": ["app/store.ts"],
       "@services": ["services/index.ts"],

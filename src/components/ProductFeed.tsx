@@ -23,7 +23,7 @@ const ProductFeed = ({ products }: ProductFeedProps) => {
         />
       </div>
 
-      <div className="md:col-span-2">
+      <div className="md:col-span-2 h-100">
         {products.slice(4, 5).map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

@@ -1,30 +1,33 @@
 import { ProductType } from '@enum/product';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import { StarIcon } from '@heroicons/react/solid';
+import Image from 'next/image';
 import Currency from 'react-currency-formatter';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  addToBasket,
   basketUpdated,
   decreaseItems,
   increaseItems,
+  removeFromBasket,
   selectItems,
 } from '@slice/basketSlice';
+import { useEffect, useState } from 'react';
 
-type ProductCardProps = {
+type CheckoutProductCardProps = {
   product: ProductType;
 };
 
-const MIN_RATING = 1;
-const MAX_RATING = 5;
-
-const ProductCard = ({ product }: ProductCardProps) => {
-  const { id, title, price, description, category, image } = product;
-  const [rating] = useState(
-    Math.floor(Math.random() * (MAX_RATING - MIN_RATING + 1)) + MIN_RATING
-  );
-  const [hasPrime] = useState(Math.random() < 0.5);
+const CheckoutProductCard = ({ product }: CheckoutProductCardProps) => {
+  const {
+    id,
+    title,
+    price,
+    description,
+    category,
+    image,
+    total,
+    hasPrime,
+    rating,
+  } = product;
   const [quantity, setQuantity] = useState(0);
   const dispatch = useDispatch();
   const items = useSelector(selectItems);
@@ -39,15 +42,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
       setQuantity(0);
     }
   }, [isBasketUpdated, product, items]);
-
-  const addItemToBasket = () => {
-    const item = {
-      ...product,
-      hasPrime,
-      rating,
-    };
-    dispatch(addToBasket(item));
-  };
 
   const decreaseItemInBasket = () => {
     const item = {
@@ -66,49 +60,44 @@ const ProductCard = ({ product }: ProductCardProps) => {
     dispatch(increaseItems(item));
   };
 
-  return (
-    <div className="relative flex flex-col m-5 bg-white z-30 p-10">
-      <p className="absolute top-2 right-2 text-xs italic text-gray-400">
-        {category}
-      </p>
+  const removeItemFromBasket = () => {
+    dispatch(removeFromBasket({ id }));
+  };
 
+  return (
+    <div className="grid grid-cols-5">
       <Image
         src={image}
         alt={title}
-        height={200}
         width={200}
+        height={200}
         objectFit="contain"
       />
 
-      <h4 className="my-3">{title}</h4>
-
-      <div className="flex">
-        {Array(rating)
-          .fill(rating)
-          .map((_, index) => (
-            <StarIcon className="h-5 text-yellow-500" key={index} />
-          ))}
-      </div>
-
-      <p className="text-xs my-2 line-clamp-2">{description}</p>
-
-      <div className="mb-5">
-        <Currency quantity={price} currency="USD" />
-      </div>
-
-      {hasPrime && (
-        <div className="flex items-center space-x-2 -mt-5 mb-2">
-          <Image
-            src="https://links.papareact.com/fdw"
-            alt="Prime Delivery"
-            width={48}
-            height={48}
-          />
-          <p className="text-xs text-gray-500">FREE Next-Day Delivery</p>
+      <div className="col-span-3 mx-5">
+        <p>{title}</p>
+        <div className="flex">
+          {Array(rating)
+            .fill(rating)
+            .map((_, i) => (
+              <StarIcon className="h-5 text-yellow-500" key={i} />
+            ))}
         </div>
-      )}
-
-      {quantity > 0 ? (
+        <p className="text-xs my-2 line-clamp-3">{description}</p>
+        <Currency quantity={price} currency="USD" />
+        {hasPrime && (
+          <div className="flex items-center space-x-2">
+            <Image
+              src="https://links.papareact.com/fdw"
+              alt="Prime"
+              width={48}
+              height={48}
+            />
+            <p className="text-sm text-gray-500">Free Next-Day Delivery</p>
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col space-y-2 my-auto justify-end">
         <div className="flex items-end flex-grow">
           <div className="grid grid-cols-3 flex-grow items-center">
             <button className="button" onClick={decreaseItemInBasket}>
@@ -120,13 +109,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </button>
           </div>
         </div>
-      ) : (
-        <button onClick={addItemToBasket} className="mt-auto button">
-          Add To Basket
+        <button className="button" onClick={removeItemFromBasket}>
+          Remove from Basket
         </button>
-      )}
+      </div>
     </div>
   );
 };
 
-export default ProductCard;
+export default CheckoutProductCard;

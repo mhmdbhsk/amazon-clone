@@ -5,4 +5,8 @@ export type ProductType = {
   description: string;
   category: string;
   image: string;
+  total?: number;
+  totalPrice?: number;
+  hasPrime?: boolean;
+  rating?: number;
 };
